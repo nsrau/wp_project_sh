@@ -30,4 +30,4 @@ sudo ./run.sh -delete sitename.com
 ```
 
 ### dependencies
-It is necessary to have wget installed on the pc itself, unzip and obviously apache2 so that everything works correctly.
+It is necessary to have **wget** installed on the pc itself, **unzip** and obviously **apache2** so that everything works correctly.
