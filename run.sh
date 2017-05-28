@@ -16,10 +16,6 @@ echo "# Create or delete                #"
 echo "###################################"
 echo " "
 
-# possible templates vhosts, os/template
-# if OS === OS_NAME => os_name.sh
-# check inject args to another sh file
-
 source ./vars/global
 
 # check OS
@@ -119,8 +115,7 @@ commandsCreate()
   then
     commandsCreateUbuntu
   fi
-  # create db, parse _  - delete db
-  # mysql -u $USER_DB -p $PASS_DB -e "create database ${SITE_NAME}"
+
   echo ""
   echo "====> FIM <===="
   echo "***********************************"
@@ -163,7 +158,7 @@ commandsDelete()
       if [[ "$OS" = "Ubuntu" ]]
       then
         commandsDeleteUbuntu
-      elif [[ "$OS" = "Darwin" ]] 
+      elif [[ "$OS" = "Darwin" ]]
       then
         commandsDeleteDarwin
       fi
@@ -204,6 +199,5 @@ elif [[ "$1" = "-delete" || "$1" = "--d" ]]
 then
   initDelete
 else
-  echo "==> Insert -create or -delete options!"
-  echo "***********************************"
+  showHelp
 fi
