@@ -1,0 +1,7 @@
+read -p "Enter your user name (for path Sites folder) : " PATH_USER
+HOSTS="/private/etc/hosts"
+WWW_FOLDER="Sites"
+SITEPATH="/Users/${PATH_USER}/${WWW_FOLDER}/${SITE_NAME}"
+VHOSTFILE_CONF="httpd-vhosts.conf"
+VHOSTSFILE="/etc/apache2/extra/${VHOSTFILE_CONF}"
+HTTPDOCS_FOLDER="${SITEPATH}/httpdocs"

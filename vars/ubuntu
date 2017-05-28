@@ -1,0 +1,8 @@
+IS_OS="Ubuntu"
+HOSTS="/etc/hosts"
+WWW_FOLDER="/var/www"
+SITEPATH="${WWW_FOLDER}/${SITE_NAME}"
+VHOSTFILE_CONF="${SITE_NAME}.conf"
+VHOSTSFILE="/etc/apache2/sites-available/${VHOSTFILE_CONF}"
+VHOSTSFILE_EN="/etc/apache2/sites-enabled/${VHOSTFILE_CONF}"
+HTTPDOCS_FOLDER="${SITEPATH}/httpdocs"

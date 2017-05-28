@@ -1,0 +1,7 @@
+SITE_NAME=$2
+ZIP_NAME="latest.zip"
+WORDPRESS_LASTEST="https://wordpress.org/${ZIP_NAME}"
+PERMISSIONS="777"
+USER_DB="root"
+PASS_DB="root"
+OS="$(uname -a)"

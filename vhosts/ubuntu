@@ -1,0 +1,9 @@
+echo "#start_${SITE_NAME}" >> ${VHOSTSFILE}
+echo "<VirtualHost *:80>" >> ${VHOSTSFILE}
+echo "   ServerName ${SITE_NAME}" >> ${VHOSTSFILE}
+echo "   ServerAlias www.${SITE_NAME}" >> ${VHOSTSFILE}
+echo '   DocumentRoot "'${HTTPDOCS_FOLDER}'"' >> ${VHOSTSFILE}
+echo '   ErrorLog "'${SITEPATH}'/logs/error_log"' >> ${VHOSTSFILE}
+echo '   CustomLog "'${SITEPATH}'/logs/access_log" common' >> ${VHOSTSFILE}
+echo "</VirtualHost>" >> ${VHOSTSFILE}
+echo "#end_${SITE_NAME}" >> ${VHOSTSFILE}
