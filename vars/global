@@ -1,7 +1,10 @@
 SITE_NAME=$2
+YES_DELETE=$3
 ZIP_NAME="latest.zip"
 WORDPRESS_LASTEST="https://wordpress.org/${ZIP_NAME}"
 PERMISSIONS="777"
+NAME_DB="${SITE_NAME//./_}"
 USER_DB="root"
 PASS_DB="root"
 OS="$(uname -a)"
+IS_OS=""

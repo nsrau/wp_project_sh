@@ -22,7 +22,7 @@ source ./vars/global
 if [[ $OS == *"Ubuntu"* ]]
 then
   source ./vars/ubuntu
-elif [[ $OS == *"darwin"* ]]
+elif [[ $OS == *"Darwin"* ]]
 then
   source ./vars/darwin
 fi
@@ -58,34 +58,44 @@ createFolder()
   mkdir -m $PERMISSIONS $SITEPATH
   mkdir -m $PERMISSIONS "${HTTPDOCS_FOLDER}"
   mkdir -m $PERMISSIONS "${SITEPATH}/logs"
-  echo "site folder ${SITEPATH} created successfully..."
+  echo "==> Site folder ${SITEPATH} created successfully..."
   echo "***********************************"
+}
+
+createDB()
+{
+  mysql -u"${USER_DB}" -p"${PASS_DB}" -e "CREATE DATABASE ${NAME_DB}"
+}
+
+deleteDB()
+{
+  mysql -u"${USER_DB}" -p"${PASS_DB}" -e"DROP DATABASE ${NAME_DB}"
 }
 
 backupHosts()
 {
   if cp $HOSTS ${HOSTS}.bkp
   then
-    echo "==> Backup file ${HOSTS}.original created..."
+    echo "==> Backup file ${HOSTS}.bkp created..."
     echo "127.0.0.1 ${SITE_NAME} www.${SITE_NAME}" >> ${HOSTS}
-    echo "File ${HOSTS} modified..."
+    echo "==> File ${HOSTS} modified..."
     echo "***********************************"
   else
-    echo "Error, file $HOSTS unmodified!"
+    echo "==> Error, file $HOSTS unmodified!"
     echo "***********************************"
     exit 1
   fi
 }
 
-crateVHostFile()
+crateVHostFileUbuntu()
 {
   if [ ! -f $VHOSTSFILE ]
   then
     source ./vhosts/ubuntu
-    echo "File $VHOSTSFILE created..."
+    echo "==> File $VHOSTSFILE created..."
     echo "***********************************"
   else
-    echo "Error, file $VHOSTSFILE not created!"
+    echo "==> Error, file $VHOSTSFILE not created!"
     echo "***********************************"
     exit 1
   fi
@@ -95,23 +105,55 @@ downloadWP()
 {
   echo "==> Download ${ZIP_NAME} start..."
   wget $WORDPRESS_LASTEST 2>&1 -P $HTTPDOCS_FOLDER --show-progress
-  echo "Complete download ${ZIP_NAME}"
+  echo "==> Complete download ${ZIP_NAME}"
   echo "***********************************"
+}
+
+createWPConfig()
+{
+  # https://gist.github.com/bgallagh3r/2853221
+  #create wp config
+  cp "${WP_CONFIG_SAMPLE}" "${WP_CONFIG}"
+  #set database details with perl find and replace
+  perl -pi -e "s/database_name_here/${NAME_DB}/g" "${WP_CONFIG}"
+  perl -pi -e "s/username_here/${USER_DB}/g" "${WP_CONFIG}"
+  perl -pi -e "s/password_here/${PASS_DB}/g" "${WP_CONFIG}"
+
+  #set WP salts
+  perl -i -pe'
+    BEGIN {
+      @chars = ("a" .. "z", "A" .. "Z", 0 .. 9);
+      push @chars, split //, "!@#$%^&*()-_ []{}<>~\`+=,.;:/?|";
+      sub salt { join "", map $chars[ rand @chars ], 1 .. 64 }
+    }
+    s/put your unique phrase here/salt()/ge
+  ' "${WP_CONFIG}"
 }
 
 commandsCreateUbuntu()
 {
+  echo "==> Enabled ${HTTPDOCS_FOLDER}..."
   a2ensite $VHOSTFILE_CONF
-  service apache2 restart
+  echo "==> Reload apache..."
+  service apache2 reload
 }
 
 commandsCreate()
 {
+  echo "==> Unzip file..."
   unzip "${HTTPDOCS_FOLDER}/${ZIP_NAME}" "wordpress/*" -d ${HTTPDOCS_FOLDER}
+  echo "==> Copy to ${HTTPDOCS_FOLDER}..."
   cp -a "${HTTPDOCS_FOLDER}/wordpress/." "${HTTPDOCS_FOLDER}"
+  echo "==> Delete ${HTTPDOCS_FOLDER}/wordpress/..."
   rm -r "${HTTPDOCS_FOLDER}/wordpress/"
   rm "${HTTPDOCS_FOLDER}/${ZIP_NAME}"
-  if [ "$OS" = "Ubuntu" ]
+  echo "==> Create database ${SITE_NAME}..."
+  createDB
+  echo "==> Create wp-config.php..."
+  createWPConfig
+  chmod -R ${PERMISSIONS} ${HTTPDOCS_FOLDER}
+
+  if [[ "$IS_OS" = "Ubuntu" ]]
   then
     commandsCreateUbuntu
   fi
@@ -123,9 +165,19 @@ commandsCreate()
 
 commandsDeleteUbuntu()
 {
+  echo "==> Delete $VHOSTSFILE..."
   rm $VHOSTSFILE
+  echo "==> Delete $VHOSTSFILE_EN..."
   rm $VHOSTSFILE_EN
+  echo "==> Delete ${SITE_NAME} from ${HOSTS}..."
   sed -i "/127.0.0.1 ${SITE_NAME} www.${SITE_NAME}/d" $HOSTS
+  rm -r $SITEPATH
+  echo "==> Delete database ${SITE_NAME}..."
+  deleteDB
+  echo "==> The ${SITE_NAME} configuration has been completely deleted"
+  echo ""
+  echo "====> FIM <===="
+  echo "***********************************"
 }
 
 commandsDeleteDarwin()
@@ -135,50 +187,43 @@ commandsDeleteDarwin()
 
 confirmDelete()
 {
-  read -p "Delete project? [y]/[n]" YES_OR_NO
-  if [ "$YES_OR_NO" = "n" ]
+  if [[ "$YES_DELETE" = "-y" ]]
   then
-    exit 1
+    commandsDelete
+  else
+    read -p "Delete project? [y]/[n]: " YES_OR_NO
+    if [[ "$YES_OR_NO" = "y" ]]
+    then
+      commandsDelete
+    else
+      exit 1
+    fi
   fi
 }
 
 commandsDelete()
 {
-  if [ "$SITE_NAME" = "" ]
+  if [[ "$SITE_NAME" = "" ]]
   then
     echo "==> Insert the name project first!"
     echo "***********************************"
     exit 1
   else
-
-    if [[ "$3" = "" ]]
+    if [[ "$IS_OS" = "Ubuntu" ]]
     then
-      confirmDelete
-    else
-      if [[ "$OS" = "Ubuntu" ]]
-      then
-        commandsDeleteUbuntu
-      elif [[ "$OS" = "Darwin" ]]
-      then
-        commandsDeleteDarwin
-      fi
+      commandsDeleteUbuntu
+    elif [[ "$IS_OS" = "Darwin" ]]
+    then
+      commandsDeleteDarwin
     fi
-
-    rm -r $SITEPATH
-
-    echo "==> The ${SITE_NAME} configuration has been completely deleted"
-    echo ""
-    echo "====> FIM <===="
-    echo "***********************************"
   fi
-
 }
 
 initCreate()
 {
   checkSiteFolder
   backupHosts
-  crateVHostFile
+  crateVHostFileUbuntu
   downloadWP
   commandsCreate
 }
@@ -197,7 +242,7 @@ then
   initCreate
 elif [[ "$1" = "-delete" || "$1" = "--d" ]]
 then
-  initDelete
+  confirmDelete
 else
   showHelp
 fi
