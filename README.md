@@ -23,6 +23,8 @@ Options
 #### create new wordpress project
 ```
 sudo ./run.sh -create sitename.com
+or
+sudo ./run.sh --c sitename.com
 ```
 #### delete wordpress project
 ```
