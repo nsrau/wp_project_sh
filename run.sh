@@ -29,7 +29,7 @@ fi
 
 showHelp()
 {
-  echo "Usage: run.sh [-help] [-create <sitename.com>] [-delete <sitename.com>] [-y <confirm delete>]"
+  echo "Usage: sudo ./run.sh [-help] | [-create <sitename.com>] | [-delete <sitename.com>] [-y <confirm delete>]"
   echo
   echo "Options"
   echo "  -help, --h"
@@ -54,7 +54,7 @@ checkSiteFolder()
 
 createFolder()
 {
-  echo "==> The site does not exist, create : ${SITEPATH}"
+  echo "==> The site does not exist, create : ${SITEPATH}..."
   mkdir -m $PERMISSIONS $SITEPATH
   mkdir -m $PERMISSIONS "${HTTPDOCS_FOLDER}"
   mkdir -m $PERMISSIONS "${SITEPATH}/logs"
@@ -69,7 +69,7 @@ createDB()
 
 deleteDB()
 {
-  mysql -u"${USER_DB}" -p"${PASS_DB}" -e"DROP DATABASE ${NAME_DB}"
+  mysql -u"${USER_DB}" -p"${PASS_DB}" -e "DROP DATABASE ${NAME_DB}"
 }
 
 backupHosts()
@@ -144,7 +144,7 @@ commandsCreate()
   unzip "${HTTPDOCS_FOLDER}/${ZIP_NAME}" "wordpress/*" -d ${HTTPDOCS_FOLDER}
   echo "==> Copy to ${HTTPDOCS_FOLDER}..."
   cp -a "${HTTPDOCS_FOLDER}/wordpress/." "${HTTPDOCS_FOLDER}"
-  echo "==> Delete ${HTTPDOCS_FOLDER}/wordpress/..."
+  echo "==> Delete ${HTTPDOCS_FOLDER}/wordpress and ${ZIP_NAME}..."
   rm -r "${HTTPDOCS_FOLDER}/wordpress/"
   rm "${HTTPDOCS_FOLDER}/${ZIP_NAME}"
   echo "==> Create database ${SITE_NAME}..."
@@ -182,7 +182,18 @@ commandsDeleteUbuntu()
 
 commandsDeleteDarwin()
 {
+  # criar um delete comum
+  echo "==> Delete ${SITE_NAME} from ${HOSTS}..."
+  sed -i "/127.0.0.1 ${SITE_NAME} www.${SITE_NAME}/d" $HOSTS
+  echo "==> Delete ${SITE_NAME} from ${VHOSTSFILE}..."
   sed -n '1h;1!H;${;g;s/#start_${SITE_NAME}.*#end_${SITE_NAME}//g;p;}' $VHOSTSFILE > $VHOSTSFILE
+  rm -r $SITEPATH
+  echo "==> Delete database ${SITE_NAME}..."
+  deleteDB
+  echo "==> The ${SITE_NAME} configuration has been completely deleted"
+  echo ""
+  echo "====> FIM <===="
+  echo "***********************************"
 }
 
 confirmDelete()
@@ -219,11 +230,18 @@ commandsDelete()
   fi
 }
 
+# criar init pra cada os
 initCreate()
 {
   checkSiteFolder
   backupHosts
-  crateVHostFileUbuntu
+  if [[ "$IS_OS" = "Ubuntu" ]]
+  then
+    crateVHostFileUbuntu
+  elif [[ "$IS_OS" = "Darwin" ]]
+  then
+    commandsDeleteDarwin
+  fi
   downloadWP
   commandsCreate
 }
@@ -246,4 +264,5 @@ then
 else
   echo "==> For show help : sudo ./run.sh -help"
   echo "***********************************"
+  exit 1
 fi
