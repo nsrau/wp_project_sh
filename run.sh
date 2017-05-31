@@ -244,5 +244,6 @@ elif [[ "$1" = "-delete" || "$1" = "--d" ]]
 then
   confirmDelete
 else
-  showHelp
+  echo "==> For show help : sudo ./run.sh -help"
+  echo "***********************************"
 fi
