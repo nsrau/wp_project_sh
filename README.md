@@ -33,13 +33,13 @@ or
 sudo ./run.sh --d sitename.com -y
 ```
 
-### # dependencies
+### dependencies
 It is necessary to have **wget** installed on the pc itself, **unzip**, **perl** and obviously **apache2** so that everything works correctly.
 ```
 sudo chmod u+x run.sh
 ```
 
-### # set vars
+### set vars
 It is mandatory to configure some variables so that everything works correctly
 
 ##### vars/global
@@ -48,7 +48,7 @@ USER_DB="root"
 PASS_DB="root"
 ```
 
-#### For mac users
+#### # For mac users
 ##### vars/darwin
 ```
 PATH_USER="nsrau"
