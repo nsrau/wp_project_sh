@@ -19,22 +19,38 @@ Options
     Complete delete wordpress project sitename.com
 ```
 
-### example Usage
-#### create new wordpress project
+### example usage:
+#### # create new wordpress project
 ```
 sudo ./run.sh -create sitename.com
 or
 sudo ./run.sh --c sitename.com
 ```
-#### delete wordpress project
+#### # delete wordpress project
 ```
 sudo ./run.sh -delete sitename.com
 or
 sudo ./run.sh --d sitename.com -y
 ```
 
-### dependencies
+### # dependencies
 It is necessary to have **wget** installed on the pc itself, **unzip**, **perl** and obviously **apache2** so that everything works correctly.
 ```
 sudo chmod u+x run.sh
 ```
+
+### # set vars
+It is mandatory to configure some variables so that everything works correctly
+
+##### vars/global
+```
+USER_DB="root"
+PASS_DB="root"
+```
+
+#### For mac users
+##### vars/darwin
+```
+PATH_USER="nsrau"
+```
+Anyway, it's best to check all the variables. I wrote this sh for my need. All variables present may not be default paths.
