@@ -54,3 +54,7 @@ PASS_DB="root"
 PATH_USER="nsrau"
 ```
 Anyway, it's best to check all the variables. I wrote this sh for my need. All variables present may not be default paths.
+
+##### # Test
+ubuntu = ok <br>
+darwin = ?
