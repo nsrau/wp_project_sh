@@ -34,7 +34,7 @@ sudo ./run.sh --d sitename.com -y
 ```
 
 ### dependencies
-It is necessary to have **wget** installed on the pc itself, **unzip**, **perl** and obviously **apache2** so that everything works correctly.
+It is necessary to have **wget** installed on the pc itself, **unzip** and obviously **apache2** so that everything works correctly.
 ```
 sudo chmod u+x run.sh
 ```
@@ -58,3 +58,6 @@ Anyway, it's best to check all the variables. I wrote this sh for my need. All v
 ##### # Test
 ubuntu = ok <br>
 darwin = ?
+
+##### # Todo
+remove mysql: [Warning]

@@ -115,19 +115,15 @@ createWPConfig()
   #create wp config
   cp "${WP_CONFIG_SAMPLE}" "${WP_CONFIG}"
   #set database details with perl find and replace
-  perl -pi -e "s/database_name_here/${NAME_DB}/g" "${WP_CONFIG}"
-  perl -pi -e "s/username_here/${USER_DB}/g" "${WP_CONFIG}"
-  perl -pi -e "s/password_here/${PASS_DB}/g" "${WP_CONFIG}"
+  sed -i "s/database_name_here/${NAME_DB}/g" "${WP_CONFIG}"
+  sed -i "s/username_here/${USER_DB}/g" "${WP_CONFIG}"
+  sed -i "s/password_here/${PASS_DB}/g" "${WP_CONFIG}"
 
-  #set WP salts
-  perl -i -pe'
-    BEGIN {
-      @chars = ("a" .. "z", "A" .. "Z", 0 .. 9);
-      push @chars, split //, "!@#$%^&*()-_ []{}<>~\`+=,.;:/?|";
-      sub salt { join "", map $chars[ rand @chars ], 1 .. 64 }
-    }
-    s/put your unique phrase here/salt()/ge
-  ' "${WP_CONFIG}"
+	#Update the secret key in wp-config.php
+	echo "Downloading and updating secret key..."
+	SECRETKEYS=$(curl -L https://api.wordpress.org/secret-key/1.1/salt/)
+	EXISTINGKEYS='put your unique phrase here'
+	printf '%s\n' "g/${EXISTINGKEYS}/d" a "${SECRETKEYS}" . w | ed -s ${WP_CONFIG}
 }
 
 commandsCreateUbuntu()
