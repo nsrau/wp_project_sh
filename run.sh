@@ -119,11 +119,11 @@ createWPConfig()
   sed -i "s/username_here/${USER_DB}/g" "${WP_CONFIG}"
   sed -i "s/password_here/${PASS_DB}/g" "${WP_CONFIG}"
 
-	#Update the secret key in wp-config.php
-	echo "Downloading and updating secret key..."
-	SECRETKEYS=$(curl -L https://api.wordpress.org/secret-key/1.1/salt/)
-	EXISTINGKEYS='put your unique phrase here'
-	printf '%s\n' "g/${EXISTINGKEYS}/d" a "${SECRETKEYS}" . w | ed -s ${WP_CONFIG}
+  #Update the secret key in wp-config.php
+  echo "Downloading and updating secret key..."
+  SECRETKEYS=$(curl -L https://api.wordpress.org/secret-key/1.1/salt/)
+  EXISTINGKEYS='put your unique phrase here'
+  printf '%s\n' "g/${EXISTINGKEYS}/d" a "${SECRETKEYS}" . w | ed -s ${WP_CONFIG}
 }
 
 commandsCreateUbuntu()
