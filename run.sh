@@ -114,7 +114,6 @@ createWPConfig()
   # https://gist.github.com/bgallagh3r/2853221
   #create wp config
   cp "${WP_CONFIG_SAMPLE}" "${WP_CONFIG}"
-  #set database details with perl find and replace
   sed -i "s/database_name_here/${NAME_DB}/g" "${WP_CONFIG}"
   sed -i "s/username_here/${USER_DB}/g" "${WP_CONFIG}"
   sed -i "s/password_here/${PASS_DB}/g" "${WP_CONFIG}"
