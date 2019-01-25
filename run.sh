@@ -146,8 +146,9 @@ commandsCreate()
   createDB
   echo "==> Create wp-config.php..."
   createWPConfig
-  chmod -R ${PERMISSIONS} ${HTTPDOCS_FOLDER}
-
+  echo "==> update chmod and chown..."
+  chmod -R ${PERMISSIONS} ${SITEPATH}
+  chown -R www-data:www-data ${SITEPATH}
   if [[ "$IS_OS" = "Ubuntu" ]]
   then
     commandsCreateUbuntu

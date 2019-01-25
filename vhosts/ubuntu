@@ -5,5 +5,10 @@ echo "   ServerAlias www.${SITE_NAME}" >> ${VHOSTSFILE}
 echo '   DocumentRoot "'${HTTPDOCS_FOLDER}'"' >> ${VHOSTSFILE}
 echo '   ErrorLog "'${SITEPATH}'/logs/error_log"' >> ${VHOSTSFILE}
 echo '   CustomLog "'${SITEPATH}'/logs/access_log" common' >> ${VHOSTSFILE}
+echo '	 <Directory "'${HTTPDOCS_FOLDER}'">' >> ${VHOSTSFILE}
+echo "	    Options Indexes FollowSymLinks" >> ${VHOSTSFILE}
+echo "	    AllowOverride All" >> ${VHOSTSFILE}
+echo "	    Require all granted" >> ${VHOSTSFILE}
+echo "	 </Directory>" >> ${VHOSTSFILE}
 echo "</VirtualHost>" >> ${VHOSTSFILE}
 echo "#end_${VHOSTS_NAME_SITE}" >> ${VHOSTSFILE}
